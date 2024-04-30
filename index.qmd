@@ -1,0 +1,17 @@
+---
+title: "Introduction"
+
+bibliography: [reference.bib]
+
+format:
+  html:
+    embed-resources: true
+---
+
+![](image/stroke-i.png)
+
+Stroke, also called a "brain attack," occurs when blood flow to the brain is blocked or there is sudden bleeding in the brain[@nih2023stroke]. This interruption can cause lasting brain damage, long-term disability, or even death. Stroke is a serious medical condition that  requires emergency care, and it is one of the world's leading causes of death and disability. Stroke analysis is an integral part of modern healthcare, as early recognition of symptoms can provide critical information for predicting strokes and promoting a healthy lifestyle[@dritsas2022stroke].
+
+Moreover, since strokes are both preventable and treatable[@cdc2023stroke], individuals can significantly reduce their risk by modifying their daily habits. Simple changes like improving diet, increasing physical activity, and managing stress can have a huge impact on stroke prevention[@asastroke2022].
+
+By analyzing and visually presenting the characteristics of groups of stroke patients to others, even those without a medical background can gain a clear understanding of the risk factors associated with strokes. This approach not only helps in recognizing the lifestyle and environmental factors that contribute to strokes, but also allows individuals to identify and alter their behaviors that may increase the risk of stroke[@zheng2022longitudinal; @riskfactors2022stroke; @mlrisk2022stroke; @mlriskmdpi2022stroke]. This awareness and intervention can substantially reduce the chances of suffering a stroke, enhancing both individual and public health.

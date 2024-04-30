@@ -1,4 +1,4 @@
-Patient ID,Patient Name,Age,Gender,Hypertension,Heart Disease,Marital Status,Work Type,Residence Type,Average Glucose Level,Body Mass Index (BMI),Smoking Status,Alcohol Intake,Physical Activity,Stroke History,Family History of Stroke,Dietary Habits,Stress Levels,Blood Pressure Levels,Cholesterol Levels,Symptoms,Diagnosis
+Patient ID,Patient Name,Age,Gender,Hypertension,HeartDisease,MaritalStatus,WorkType,ResidenceType,AverageGlucoseLevel,BMI,SmokingStatus,AlcoholIntake,PhysicalActivity,StrokeHistory,FamilyHistoryofStroke,DietaryHabits,StressLevels,BloodPressureLevels,CholesterolLevels,Symptoms,Diagnosis
 18153,Mamooty Khurana,56,Male,0,1,Married,Self-employed,Rural,130.91,22.37,Non-smoker,Social Drinker,Moderate,0,Yes,Vegan,3.48,140/108,"HDL: 68, LDL: 133","Difficulty Speaking, Headache",Stroke
 62749,Kaira Subramaniam,80,Male,0,0,Single,Self-employed,Urban,183.73,32.57,Non-smoker,Never,Low,0,No,Paleo,1.73,146/91,"HDL: 63, LDL: 70","Loss of Balance, Headache, Dizziness, Confusion",Stroke
 32145,Dhanush Balan,26,Male,1,1,Married,Never Worked,Rural,189.0,20.32,Formerly Smoked,Rarely,High,0,Yes,Paleo,7.31,154/97,"HDL: 59, LDL: 95","Seizures, Dizziness",Stroke

@@ -1,0 +1,45 @@
+---
+title: "Data"
+
+format:
+  html:
+    embed-resources: true
+---
+
+This [dataset](https://www.kaggle.com/datasets/teamincribo/stroke-prediction/data) is designed to predict stroke occurrences based on various health parameters and personal attributes. The dataset includes a comprehensive range of features such as age, gender, marital status, type of work, residence type, average glucose level, BMI, smoking status, and more. Each entry is labeled to indicate whether the individual experienced a stroke, making this dataset an invaluable resource to better visualize the distribution of each feature. The dataset's diversity in demographic and health-related variables enables us to explore multifaceted aspects of stroke risk factors. This rich dataset contributes significantly to the visualization and even broader goals of preventive healthcare and personalized medicine.
+
+::: panel-tabset
+
+### Dataset
+
+```{r, echo=FALSE}
+data <- read.csv("data/stroke_prediction_dataset.csv")
+knitr::kable(head(data))
+```
+
+### Missing Values
+
+```{r, echo=FALSE}
+# Check for missing values in each column
+missing_values <- colSums(is.na(data))
+
+# Return the counts of missing values
+missing_values
+```
+
+### Duplicate Rows
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Load the dplyr package
+library(dplyr)
+
+# Check for duplicate rows
+duplicate_rows <- data %>% 
+  duplicated() %>% 
+  sum()
+
+# Return the counts duplicate rows
+duplicate_rows
+```
+
+:::

@@ -1,0 +1,22 @@
+project:
+  type: website
+
+website:
+  navbar:
+    left:
+      - href: index.qmd
+        text: Introduction
+      - Data.qmd
+      - Analysis.qmd
+      - href: client.ipynb
+        text: Dashboard
+      - Conclusions.qmd
+
+format:
+  html:
+    theme: darkly
+    css: styles.css
+    toc: true
+
+
+

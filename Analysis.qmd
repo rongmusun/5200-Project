@@ -1,0 +1,311 @@
+---
+title: "Analysis"
+
+format:
+  html:
+    embed-resources: true
+    code-fold: true
+---
+
+```{python, warning=FALSE, message=FALSE}
+import pandas as pd
+
+# Load the dataset
+data_path = 'data/healthcare-dataset-stroke-data.csv'
+stroke_data = pd.read_csv(data_path)
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Set the style for the plots
+sns.set(style='whitegrid')
+
+# Scatter plot with histogram
+fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+
+# Scatter plot for 'age' vs 'avg_glucose_level', colored by 'stroke'
+sns.scatterplot(
+    data=stroke_data, 
+    x='age', 
+    y='avg_glucose_level', 
+    hue='stroke', 
+    palette='coolwarm', 
+    ax=axs[0]
+).set_title('Scatter Plot: Age vs Avg Glucose Level')
+
+# Histogram for 'avg_glucose_level'
+sns.histplot(
+    data=stroke_data, 
+    x='avg_glucose_level', 
+    hue='stroke', 
+    palette='coolwarm', 
+    kde=True, 
+    ax=axs[1]
+).set_title('Histogram: Avg Glucose Level Distribution')
+
+# Tight layout for better visual appearance
+plt.tight_layout()
+
+# Show the plot
+plt.show()  # To display the plot in this environment
+```
+
+The interactive linked scatter plot with a histogram highlights the relationship between 'age' and 'avg_glucose_level' while allowing users to explore how these variables correlate with stroke occurrences. The scatter plot provides a clear visualization of data distribution and potential outliers, with stroke cases marked distinctly. This allows for easy identification of risk patterns based on age and glucose levels. The accompanying histogram offers a deeper look at the distribution of glucose levels, helping to understand the frequency and range of values across the dataset.
+
+```{python, warning=FALSE, message=FALSE}
+from pandas.plotting import parallel_coordinates
+
+# Create a parallel coordinates plot with highlighting for 'stroke'
+plt.figure(figsize=(12, 6))
+parallel_coordinates(
+    stroke_data, 
+    class_column='stroke', 
+    cols=['age', 'avg_glucose_level', 'bmi'], 
+    color=['r', 'b'], 
+    alpha=0.4
+)
+plt.title('Parallel Coordinates Plot: Attributes by Stroke')
+plt.xlabel('Attributes')
+plt.ylabel('Values')
+plt.grid(True)
+plt.show()  # To display the plot in this environment
+```
+
+The parallel coordinates plot displays multiple attributes ('age', 'avg_glucose_level', 'bmi') for individuals, categorized by stroke occurrence. This visualization is useful for identifying relationships and patterns across several dimensions simultaneously. For example, it can reveal if higher glucose levels and BMI are more common among older individuals or those who have experienced a stroke, thus providing insights into potential risk factors across different demographic segments.
+
+```{python, eval=FALSE}
+import networkx as nx
+
+# Create a network graph to represent the relationship between 'work_type' and 'stroke'
+G = nx.Graph()
+
+# Add work_type and stroke as nodes
+for work_type in stroke_data['work_type'].unique():
+    G.add_node(work_type, label='work_type')
+
+for stroke in stroke_data['stroke'].unique():
+    G.add_node(stroke, label='stroke')
+
+# Add edges based on the relationships between 'work_type' and 'stroke'
+for _, row in stroke_data.iterrows():
+    G.add_edge(row['work_type'], row['stroke'])
+
+# Draw the network diagram with a circular layout
+plt.figure(figsize=(8, 8))
+pos = nx.circular_layout(G)
+nx.draw(G, pos, with_labels=True, node_size=1500, font_size=12, node_color='skyblue', edge_color='gray')
+plt.title("Circular Network Diagram: Work Type and Stroke")
+plt.show()  # To display the plot in this environment
+```
+
+![](image/network.jpg)
+
+This visualization uses a circular network layout to represent the relationship between different work types and stroke incidence. Each work type is connected to nodes representing the presence or absence of stroke, illustrating how certain professions might correlate with higher or lower stroke risks. This type of diagram is particularly useful for visualizing complex interconnections in a compact and visually appealing manner, facilitating easier pattern recognition and hypothesis generation about occupational health risks.
+
+```{python, warning=FALSE, message=FALSE}
+plt.figure(figsize=(10, 6))
+sns.boxplot(
+    data=stroke_data, 
+    x='Residence_type', 
+    y='age', 
+    palette='pastel'
+)
+plt.title("Boxplot: Age Distribution by Residence Type")
+plt.xlabel("Residence Type")
+plt.ylabel("Age")
+plt.show()  # To display the plot in this environment
+```
+
+The boxplot for 'age' distribution by 'Residence_type' (urban vs. rural) provides a straightforward comparative analysis of age demographics between different living environments. It highlights the median age, variance, and outliers within each category. This plot is crucial for understanding how age profiles vary in different settings, which can be instrumental in tailoring health interventions or services according to the age structure of populations in urban and rural areas.
+
+```{python}
+# Correlation heatmap to visualize relationships among numerical attributes
+plt.figure(figsize=(10, 8))
+correlation_matrix = stroke_data[['age', 'avg_glucose_level', 'bmi', 'hypertension', 'heart_disease']].corr()
+
+sns.heatmap(
+    correlation_matrix, 
+    annot=True, 
+    cmap='coolwarm', 
+    fmt='.2f', 
+    linewidths=0.5
+).set_title('Heatmap: Correlation Among Numerical Attributes')
+
+plt.show()  # To display the plot in this environment
+```
+
+The heatmap provides a visual representation of the correlation coefficients among various numerical attributes like 'age', 'avg_glucose_level', 'bmi', 'hypertension', and 'heart_disease'. By using color intensity to represent the strength of correlations, the heatmap can quickly reveal important relationships, such as between 'bmi' and 'heart_disease' or 'age' and 'hypertension'. This type of visualization is particularly valuable for identifying potential risk factors and dependencies that may not be immediately apparent through other analytical methods.
+
+```{python}
+import plotly.express as px
+
+# Data preparation for the donut chart
+stroke_by_gender = stroke_data.groupby(['gender', 'stroke']).size().reset_index(name='count')
+
+# Create the donut chart to show stroke proportions by gender
+fig_donut = px.pie(
+    stroke_by_gender, 
+    values='count', 
+    names='gender', 
+    hole=0.5, 
+    title='Donut Chart: Stroke Proportions by Gender'
+)
+
+# Show the donut chart
+fig_donut.show()  # To display the plot in this environment
+```
+
+This donut chart visualizes the proportion of stroke occurrences by gender in a visually distinct and accessible manner. The hollow center can be used to display additional information or simply focus the viewer’s attention on the proportions. This visualization helps highlight gender differences in stroke prevalence, which can be crucial for medical research and public health initiatives aimed at understanding and addressing gender-specific health risks.
+
+```{python, warning=FALSE, message=FALSE}
+# Create a violin plot to show the distribution of 'bmi' by 'smoking_status'
+plt.figure(figsize=(10, 6))
+sns.violinplot(
+    data=stroke_data, 
+    x='smoking_status', 
+    y='bmi', 
+    palette='muted'
+).set_title("Violin Plot: BMI Distribution by Smoking Status")
+plt.xlabel("Smoking Status")
+plt.ylabel("BMI")
+plt.show()  # To display the plot in this environment
+```
+
+The violin plot provides a detailed view of the distribution of BMI values across different smoking statuses. This plot combines the benefits of a boxplot with a kernel density estimation, showing not only the median and quartiles but also the full distribution of data, which can reveal multiple modes or anomalies. Such insights are essential for understanding how lifestyle choices like smoking could impact body weight and potentially relate to broader health outcomes.
+
+```{python, eval=FALSE}
+# Create a pairplot to examine relationships among multiple numerical attributes
+plt.figure(figsize=(10, 10))
+sns.pairplot(
+    stroke_data, 
+    hue='stroke', 
+    vars=['age', 'avg_glucose_level', 'bmi'], 
+    palette='coolwarm'
+).fig.suptitle('Pairplot: Relationships Among Numerical Attributes', y=1.02)
+
+plt.show()  # To display the plot in this environment
+```
+
+![](image/pairplot.png)
+
+The pairplot creates a matrix of scatter plots for multiple numerical attributes (such as 'age', 'avg_glucose_level', 'bmi'), color-coded by stroke occurrence. This comprehensive visualization enables the exploration of pairwise relationships across several dimensions, helping to identify trends and outliers effectively. By examining these scatter plots, researchers can hypothesize about possible interactions between different health indicators and their collective impact on stroke risk, which can guide further statistical analysis or predictive modeling.
+
+```{r, message=FALSE, warning=FALSE}
+# Load the necessary libraries
+library(plotly)
+library(dplyr)
+library(readr)
+
+# Load your dataset
+data <- read_csv("data/stroke_prediction_dataset.csv")
+
+# Convert Diagnosis to a binary outcome (0 = No Stroke, 1 = Stroke)
+data$Diagnosis <- ifelse(data$Diagnosis == "Stroke", 1, 0)
+
+# Create a summary data frame for count of diagnoses and total observations grouped by Dietary Habits and Alcohol Intake
+summary_data <- data %>%
+  group_by(DietaryHabits, AlcoholIntake) %>%
+  summarize(Total_Obs = n(),
+            Stroke_Count = sum(Diagnosis), 
+            Stroke_Rate = sum(Diagnosis) / n() * 100, 
+            .groups = 'drop')
+
+# Create an interactive bubble plot using plotly, using stroke rate as the size of the bubbles
+plot <- plot_ly(summary_data, x = ~DietaryHabits, y = ~AlcoholIntake, size = ~Stroke_Rate,
+                text = ~paste("Stroke Count:", Stroke_Count,
+                              "<br>Total Observations:", Total_Obs,
+                              "<br>Stroke Rate:", sprintf("%.2f%%", Stroke_Rate),
+                              "<br>Dietary Habits:", DietaryHabits, 
+                              "<br>Alcohol Intake:", AlcoholIntake),
+                type = 'scatter', mode = 'markers',
+                marker = list(color = 'orange', opacity = 0.6, sizemode = 'diameter')) %>%
+  layout(title = "Interactive Bubble Plot of Stroke Rate by Dietary Habits and Alcohol Intake",
+         xaxis = list(title = "Dietary Habits"),
+         yaxis = list(title = "Alcohol Intake"),
+         showlegend = FALSE)
+
+# Display the plot
+plot
+```
+
+We developed an interactive bubble plot that illustrating the relationship between dietary habits and alcohol intake in the context of stroke incidence rates. The vertical axis differentiates levels of alcohol consumption, ranging from 'Never' to 'Frequent Drinker,' while the horizontal axis categorizes individuals by their dietary preferences, such as Gluten-Free, Keto, Non-Vegetarian, Paleo, Pescatarian, Vegan, and Vegetarian. The size of each bubble presumably correlates with the stroke rate, suggesting that certain combinations of diet and drinking habits may influence the likelihood of having a stroke.
+
+The plot indicates that frequent alcohol consumers, particularly within certain dietary groups like non-vegetarian and keto, might face a higher stroke risk, presented by larger bubbles in these categories. On the contrary, those who rarely or never consume alcohol show smaller bubbles, suggesting a lower incidence of stroke. Interestingly, the plot also suggests a consistent stroke rate across different levels of alcohol intake for vegan and vegetarian diets, whereas diets like paleo display larger bubbles even at lower levels of alcohol consumption.
+
+```{r, warning=FALSE, message=FALSE}
+library(wordcloud)
+library(tm)
+library(RColorBrewer)
+
+stroke_data <- data %>%
+  filter(Diagnosis == 1)
+symptoms_text <- stroke_data$Symptoms
+symptoms_text <- na.omit(symptoms_text)
+corpus <- Corpus(VectorSource(symptoms_text))
+corpus <- tm_map(corpus, content_transformer(tolower))
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeNumbers)
+corpus <- tm_map(corpus, removeWords, stopwords("english"))
+custom_stopwords <- c("symptom", "symptoms")
+corpus <- tm_map(corpus, removeWords, custom_stopwords)
+
+tdm <- TermDocumentMatrix(corpus)
+m <- as.matrix(tdm)
+word_freqs <- sort(rowSums(m), decreasing = TRUE)
+word_freqs <- data.frame(word = names(word_freqs), freq = word_freqs)
+num_words <- min(100, nrow(word_freqs))
+
+wordcloud(words = word_freqs$word, freq = word_freqs$freq, scale = c(3, 0.5), 
+          max.words = num_words, random.order = FALSE, rot.per = 0.35, 
+          colors = colorRampPalette(brewer.pal(9, "Blues"))(num_words))
+```
+
+We have created a word cloud to visually represent the range of symptoms commonly reported by stroke patients. This word cloud includes terms like "dizziness," "headache," "confusion," "seizures," and "weakness," among others. Notably, all the words in the cloud are of relatively the same size, indicating that these symptoms are reported with similar frequency among stroke patients. The word cloud effectively conveys that while the severity may vary from person to person, the prevalence of each symptom is notably consistent.
+
+```{r}
+library(plotly)
+
+# Load the dataset
+data <- read.csv("data/stroke_prediction_dataset.csv")
+
+# Calculate the total count for each category of Marital Status
+total_count <- aggregate(Diagnosis ~ MaritalStatus, data = data, FUN = function(x) sum(x == "Stroke"))
+
+# Calculate the proportion of stroke and no-stroke cases for each category of Marital Status and Work Type
+prop_stroke <- aggregate(Diagnosis ~ MaritalStatus + WorkType, data = data, FUN = function(x) sum(x == "Stroke"))
+
+# Create a stacked bar chart with count on the y-axis and stroke rate as hover text
+plot_ly(data = prop_stroke, x = ~MaritalStatus, y = ~Diagnosis, color = ~WorkType, type = "bar", 
+        marker = list(line = list(color = "black", width = 0.5)), 
+        hoverinfo = "text",
+        text = ~paste("Marital Status: ", MaritalStatus, "<br>Work Type: ", WorkType, 
+                      "<br>Stroke Rate: ", sprintf("%.2f", (Diagnosis / total_count$Diagnosis[match(MaritalStatus, total_count$MaritalStatus)]) * 100), "%")) %>%
+  layout(title = "Stroke Rate by Marital Status and Work Type",
+         xaxis = list(title = "Marital Status"),
+         yaxis = list(title = "Count"),
+         barmode = "stack")
+
+```
+
+The stacked bar chart presents the distribution of stroke rates across different marital statuses and work types. Notably, across all marital statuses, there appears to be a consistent distribution of stroke cases, and it reveals that the stroke rates vary slightly among different combinations of marital status and work type. Across all marital statuses, the stroke rates range from approximately 23.34% to 26.92%. Interestingly, there is no significant disparity in stroke rates between the marital statuses of divorced, married, and single individuals. However, within each marital status, variations in stroke rates are observed across different work types. For instance, among divorced individuals, the self-employed have the highest stroke rate at 26.17%, while those who never worked exhibit the lowest rate at 23.99%. Similarly, for married and single individuals, there are subtle differences in stroke rates across various work types. This suggests that while marital status may not be a significant factor influencing stroke risk, the nature of one's occupation might play a role. Further investigation into the specific occupational hazards and lifestyle factors associated with each work type could provide valuable insights into understanding these variations in stroke rates.
+
+```{r, message=FALSE, warning=FALSE}
+library(plotly)
+
+# Load the dataset
+data <- read.csv("data/stroke_prediction_dataset.csv")
+
+# Create a bubble chart with adjusted bubble size
+plot_ly(data, x = ~BMI, y = ~AverageGlucoseLevel, size = ~I(StressLevels), color = ~Diagnosis, 
+        colors = c("blue", "red"), type = "scatter", mode = "markers", 
+        hoverinfo = "text",
+        text = ~paste("<br>Body Mass Index (BMI): ", BMI, "<br>Average Glucose Level: ", AverageGlucoseLevel, 
+                      "<br>Stress Levels: ", StressLevels, "<br>Diagnosis: ", Diagnosis)) %>%
+  layout(title = "Bubble Chart: BMI vs Average Glucose Level",
+         xaxis = list(title = "BMI"),
+         yaxis = list(title = "Average Glucose Level"),
+         showlegend = TRUE,
+         legend = list(title = "Diagnosis"))
+```
+
+The bubble plot illustrates the relationship between Body Mass Index (BMI) and Average Glucose Level, with the size of each bubble representing Stress Levels and the color denoting the diagnosis status of the individuals in the dataset. The plot reveals several insights. First, there is a noticeable dispersion of data points across different BMI and glucose level ranges, indicating vacoriability in stress levels among the individuals. Additionally, bubbles of different sizes highlight the varying levels of stress experienced by the individuals, with larger bubbles representing higher stress levels. The color contrast between blue and red bubbles distinguishes between stroke and non-stroke cases, allowing for easy identification of trends. Upon analyzing the plot, it's evident that areas with higher BMI, elevated average glucose levels, and increased stress levels are associated with a higher incidence of stroke. This observation aligns with existing medical knowledge that highlights the correlation between these factors and the risk of stroke. This suggests that individuals with these characteristics may have an increased risk of experiencing a stroke. Therefore, it's crucial for healthcare practitioners to consider these factors when assessing stroke risk and implementing preventive measures.
